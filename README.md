@@ -6,7 +6,9 @@ bundle install
 
 ## Using: Current versions of 1Password
 
-Note that newer vesrions of 1Password actually use a folder
+*(As of August 10, 2014.)*
+
+Note that newer versions of 1Password actually use a folder
 as the `.1pif` "file" and the actual legacy PIF-format file
 is inside it. So you'd want to do something like this:
 
