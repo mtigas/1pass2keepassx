@@ -90,7 +90,7 @@ lines.each do |line|
 
       username = password = nil
     else
-      puts "Don't know how to handle records of type #{entry['typeName']} yet."
+      STDERR.puts "Don't know how to handle records of type #{entry['typeName']} yet."
   end
 end
 
