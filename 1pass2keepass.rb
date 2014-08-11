@@ -63,6 +63,9 @@ lines.each do |line|
         :url => nil,
         :username => entry['secureContents']['username'],
         :password => entry['secureContents']['password'],
+        :creation => Time.at(entry['createdAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :comment => entry['secureContents']['notesPlain'],
       } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
     when 'Regular', 'SavedSearch', 'Point'
       next
@@ -80,6 +83,9 @@ lines.each do |line|
         :url => entry['location'],
         :username => username,
         :password => password,
+        :creation => Time.at(entry['createdAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :comment => entry['secureContents']['notesPlain'],
       } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
 
       username = password = nil
@@ -119,6 +125,9 @@ groups.each do |group_name, entries|
     entry_node = group.add_element 'entry'
     entry_node.add_element('username').text = entry[:username]
     entry_node.add_element('password').text = entry[:password]
+    entry_node.add_element('creation').text = entry[:creation]
+    entry_node.add_element('lastmod').text = entry[:lastmod]
+    entry_node.add_element('comment').text = entry[:comment]
     entry_node.add_element('title').text = title
     entry_node.add_element('url').text = entry[:url]
   end
