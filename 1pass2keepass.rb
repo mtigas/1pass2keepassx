@@ -92,7 +92,7 @@ lines.each do |line|
         :password => nil,
         :creation => Time.at(entry['createdAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
         :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
-        :comment => "Bank Name: #{entry['secureContents']['bankName']}<br>Account: #{entry['secureContents']['accountNo']}<br>Routing: #{entry['secureContents']['routingNo']}<br>Type: #{entry['secureContents']['accountType']}<br>Bank Address: #{entry['secureContents']['branchAddress']}<br>Bank Phone: #{entry['secureContents']['branchPhone']}<br>",
+        :comment => "Bank Name: #{entry['secureContents']['bankName']}\nAccount: #{entry['secureContents']['accountNo']}\nRouting: #{entry['secureContents']['routingNo']}\nType: #{entry['secureContents']['accountType']}\nBank Address: #{entry['secureContents']['branchAddress']}\nBank Phone: #{entry['secureContents']['branchPhone']}\n",
       } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
     when 'Regular', 'SavedSearch', 'Point'
       next
@@ -159,12 +159,20 @@ groups.each do |group_name, entries|
 
   entries.each do |title, entry|
     entry_node = group.add_element 'entry'
-    entry_node.add_element('username').text = entry[:username]
-    entry_node.add_element('password').text = entry[:password] ? entry[:password].gsub(/\r/, '').gsub(/\n/, '<br/>') : entry[:password]
+    ["username", "password", "comment", "title"].each do |field|
+      if entry[field.to_sym]
+        node = entry_node.add_element(field)
+        node.text = ""
+        entry[field.to_sym].gsub(/\r/, '').split("\n").each_with_index do |t,i|
+          node.add_text t
+          if i != (entry[field.to_sym].gsub(/\r/, '').split("\n").size - 1)
+            node.add_element "br"
+          end
+        end
+      end
+    end
     entry_node.add_element('creation').text = entry[:creation]
     entry_node.add_element('lastmod').text = entry[:lastmod]
-    entry_node.add_element('comment').text = entry[:comment] ? entry[:comment].gsub(/\r/, '').gsub(/\n/, '<br/>') : entry[:comment]
-    entry_node.add_element('title').text = title
     entry_node.add_element('url').text = entry[:url]
   end
 end
