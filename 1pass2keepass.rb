@@ -67,6 +67,33 @@ lines.each do |line|
         :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
         :comment => entry['secureContents']['notesPlain'],
       } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
+    when 'SecureNote'
+      groups[group_name][title] = {
+        :url => nil,
+        :username => nil,
+        :password => nil,
+        :creation => Time.at(entry['createdAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :comment => entry['secureContents']['notesPlain'],
+      } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
+    when 'CreditCard'
+      groups[group_name][title] = {
+        :url => nil,
+        :username => entry['secureContents']['ccnum'],
+        :password => entry['secureContents']['v'],
+        :creation => Time.at(entry['createdAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :comment => "#{entry['secureContents']['expiry_mm']}/#{entry['secureContents']['expiry_yy']}",
+      } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
+    when 'BankAccountUS'
+      groups[group_name][title] = {
+        :url => nil,
+        :username => entry['secureContents']['accountNo'],
+        :password => nil,
+        :creation => Time.at(entry['createdAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :lastmod => Time.at(entry['updatedAt'].to_i).strftime("%Y-%m-%dT%H:%I:%S"),
+        :comment => "Bank Name: #{entry['secureContents']['bankName']}<br>Account: #{entry['secureContents']['accountNo']}<br>Routing: #{entry['secureContents']['routingNo']}<br>Type: #{entry['secureContents']['accountType']}<br>Bank Address: #{entry['secureContents']['branchAddress']}<br>Bank Phone: #{entry['secureContents']['branchPhone']}<br>",
+      } unless (groups[group_name].has_key?(title) and groups[group_name][title]['updatedAt'].to_i > entry['updatedAt'].to_i)
     when 'Regular', 'SavedSearch', 'Point'
       next
     when 'WebForm'
@@ -104,6 +131,15 @@ groups.each do |group_name, entries|
     when 'Password'
       group.add_element('title').text = 'Password'
       group.add_element('icon').text = '0'
+    when 'BankAccountUS'
+      group.add_element('title').text = 'Bank Account'
+      group.add_element('icon').text = '66'
+    when 'CreditCard'
+      group.add_element('title').text = 'Credit Card'
+      group.add_element('icon').text = '66'
+    when 'SecureNote'
+      group.add_element('title').text = 'Secure Note'
+      group.add_element('icon').text = '54'
     when 'WebForm'
       group.add_element('title').text = 'Internet'
       group.add_element('icon').text = '1'
