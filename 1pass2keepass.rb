@@ -124,10 +124,10 @@ groups.each do |group_name, entries|
   entries.each do |title, entry|
     entry_node = group.add_element 'entry'
     entry_node.add_element('username').text = entry[:username]
-    entry_node.add_element('password').text = entry[:password]
+    entry_node.add_element('password').text = entry[:password] ? entry[:password].gsub(/\r/, '').gsub(/\n/, '<br/>') : entry[:password]
     entry_node.add_element('creation').text = entry[:creation]
     entry_node.add_element('lastmod').text = entry[:lastmod]
-    entry_node.add_element('comment').text = entry[:comment]
+    entry_node.add_element('comment').text = entry[:comment] ? entry[:comment].gsub(/\r/, '').gsub(/\n/, '<br/>') : entry[:comment]
     entry_node.add_element('title').text = title
     entry_node.add_element('url').text = entry[:url]
   end
