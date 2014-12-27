@@ -159,7 +159,11 @@ groups.each do |group_name, entries|
 
   entries.each do |title, entry|
     entry_node = group.add_element 'entry'
-    ["username", "password", "comment", "title"].each do |field|
+    entry_node.add_element('title').text = title
+    entry_node.add_element('creation').text = entry[:creation]
+    entry_node.add_element('lastmod').text = entry[:lastmod]
+    entry_node.add_element('url').text = entry[:url]
+    ["username", "password", "comment"].each do |field|
       if entry[field.to_sym]
         node = entry_node.add_element(field)
         node.text = ""
@@ -169,13 +173,16 @@ groups.each do |group_name, entries|
             node.add_element "br"
           end
         end
+      else
+        entry_node.add_element(field).text = entry[field.to_sym] || ""
       end
     end
-    entry_node.add_element('creation').text = entry[:creation]
-    entry_node.add_element('lastmod').text = entry[:lastmod]
-    entry_node.add_element('url').text = entry[:url]
   end
 end
 
 doc << XMLDecl.new
-doc.write($stdout)
+
+formatter = REXML::Formatters::Pretty.new(2)
+formatter.width = Float::INFINITY
+formatter.compact = true
+formatter.write(doc, $stdout)
